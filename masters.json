@@ -1,0 +1,21 @@
+{
+    "_id" : 1.0,
+    "name" : "William Jones Jr.",
+    "rank" : "landlord",
+    "city" : "London",
+    "wealth" : 643200.0
+}
+{
+    "_id" : 2.0,
+    "name" : "John Williams",
+    "rank" : "landlord",
+    "city" : "Budapest",
+    "wealth" : 7836500.0
+}
+{
+    "_id" : 3.0,
+    "name" : "William White Jr.",
+    "rank" : "landlord",
+    "city" : "New York",
+    "wealth" : 824600.0
+}
