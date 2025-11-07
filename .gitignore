@@ -1,0 +1,24 @@
+# Node.js dependency mappa
+node_modules/
+
+# .env fájlok (érzékeny információkat tartalmazhatnak)
+# .env
+
+# Néhány build fájl és mappa
+dist/
+build/
+
+# Log fájlok
+*.log
+
+# npm / yarn lock fájlok, ha nem akarod őket verziókezelni (de általában érdemes verzióval kezelni)
+# package-lock.json
+# yarn.lock
+
+# IDE és editor fájlok
+.vscode/
+.idea/
+
+# Operációs rendszer fájlok (pl. macOS vagy Windows specifikus fájlok)
+.DS_Store
+Thumbs.db

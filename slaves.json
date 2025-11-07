@@ -1,40 +1,42 @@
-{
-    "_id" : 1.0,
-    "name" : "Jamal Brown",
-    "age" : 27.0,
-    "height" : 180.0,
-    "price" : 500.0,
-    "masterId" : 1.0
-}
-{
-    "_id" : 2.0,
-    "name" : "Shaquiveefa Johnes",
-    "age" : 14.0,
-    "height" : 165.0,
-    "price" : 450.0,
-    "masterId" : 1.0
-}
-{
-    "_id" : 3.0,
-    "name" : "Darius Dingle",
-    "age" : 13.0,
-    "height" : 172.0,
-    "price" : 520.0,
-    "masterId" : 2.0
-}
-{
-    "_id" : 4.0,
-    "name" : "Barna Néger",
-    "age" : 30.0,
-    "height" : 216.0,
-    "price" : 999.0,
-    "masterId" : 1.0
-}
-{
-    "_id" : 5.0,
-    "name" : "Tyrone Green",
-    "age" : 45.0,
-    "height" : 175.0,
-    "price" : 530.0,
-    "masterId" : 2.0
-}
+[
+    {
+        "_id": 1.0,
+        "name": "Jamal Brown",
+        "age": 27.0,
+        "height": 180.0,
+        "price": 500.0,
+        "masterId": 1.0
+    },
+    {
+        "_id": 2.0,
+        "name": "Shaquiveefa Johnes",
+        "age": 14.0,
+        "height": 165.0,
+        "price": 450.0,
+        "masterId": 1.0
+    },
+    {
+        "_id": 3.0,
+        "name": "Darius Dingle",
+        "age": 13.0,
+        "height": 172.0,
+        "price": 520.0,
+        "masterId": 2.0
+    },
+    {
+        "_id": 4.0,
+        "name": "Barna Néger",
+        "age": 30.0,
+        "height": 216.0,
+        "price": 999.0,
+        "masterId": 1.0
+    },
+    {
+        "_id": 5.0,
+        "name": "Tyrone Green",
+        "age": 45.0,
+        "height": 175.0,
+        "price": 530.0,
+        "masterId": 2.0
+    }
+]
