@@ -25,7 +25,7 @@ const masterSchema = new Schema({
         type: Number
     }
 }, {
-    // A 'collection' opcióval megadhatod a kollekció nevét az adatbázisban
+    // A 'collection' opcioval megadhatod a kollekció nevét az adatbázisban
     collection: 'masters' 
 });
 
