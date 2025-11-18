@@ -91,14 +91,66 @@ describe('SlaveController.createSlave tests', () => {
     });
 });
 
+describe('SlaveController.updateSlave tests', () => {
 
+    it('should have an updateSlave function', () => {
+        expect(typeof SlaveController.updateSlave).toBe('function');
+    });
 
+    it('should call slaveModel.findByIdAndUpdate with the correct data', async () => {
+        const updatedSlave = { id: '1', name: 'Adam', age: 30, origin: 'Africa' };
+        req.params.id = '1';
+        req.body = updatedSlave;
 
+        // Mock the findByIdAndUpdate to return a successful update
+        slaveModel.findByIdAndUpdate.mockResolvedValue(updatedSlave);
 
+        await SlaveController.updateSlave(req, res, next);
 
+        // Ensure the correct data is passed to findByIdAndUpdate
+        expect(slaveModel.findByIdAndUpdate).toHaveBeenCalledWith(
+            '1', // ID parameter
+            updatedSlave, // Updated fields
+            { new: true, runValidators: true } // Options
+        );
+    });
 
+    it('should return 200 status code when the slave is updated successfully', async () => {
+        const updatedSlave = { id: '1', name: 'Adam', age: 30, origin: 'Africa' };
+        req.params.id = '1';
+        req.body = updatedSlave;
 
+        slaveModel.findByIdAndUpdate.mockResolvedValue(updatedSlave);
 
+        await SlaveController.updateSlave(req, res, next);
 
+        expect(res.statusCode).toBe(200);  // Status code should be 200 (OK)
+        expect(res._getJSONData()).toEqual(updatedSlave);  // Response should contain updated slave data
+    });
 
+    it('should return 404 status code when slave is not found', async () => {
+        req.params.id = '999';  // Non-existent slave ID
+        req.body = { name: 'John', age: 25, origin: 'Africa' };
 
+        slaveModel.findByIdAndUpdate.mockResolvedValue(null);  // Simulate no slave found
+
+        await SlaveController.updateSlave(req, res, next);
+
+        expect(res.statusCode).toBe(404);  // 404 for not found
+        expect(res._getJSONData()).toEqual({ message: 'Nem található ilyen ID-jű rabszolga.' });
+    });
+
+    it('should return 400 status code if update fails due to validation error', async () => {
+        const invalidData = { name: '', age: -5 };  // Invalid data (e.g., empty name and invalid age)
+        req.params.id = '1';
+        req.body = invalidData;
+
+        const error = new Error('slave validation failed');
+        slaveModel.findByIdAndUpdate.mockRejectedValue(error);  // Simulate validation error
+
+        await SlaveController.updateSlave(req, res, next);
+
+        expect(res.statusCode).toBe(400);  // 400 for bad request
+        expect(res._getJSONData()).toEqual({ message: 'slave validation failed' });
+    });
+});
