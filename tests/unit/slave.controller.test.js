@@ -1,23 +1,24 @@
-const SlaveController = require("../../controller/slave.controller")
-const slaveModel = require("../../model/slave.model")
-const httpMocks = require("node-mocks-http")
+const SlaveController = require("../../controller/slave.controller");
+const slaveModel = require("../../model/slave.model");
+const httpMocks = require("node-mocks-http");
 
-slaveModel.create = jest.fn()
+slaveModel.create = jest.fn();
 
-let req, res, next
+let req, res, next;
+jest.mock("../../model/slave.model");
+
 // Mock the slaveModel methods correctly before each test
 beforeEach(() => {
     req = httpMocks.createRequest();
     res = httpMocks.createResponse();
     next = null;
 
-    // Properly mock `find` and `findById` methods
+    // Properly mock `find`, `findById`, `findByIdAndUpdate`, and `findByIdAndDelete` methods
     slaveModel.find = jest.fn();
     slaveModel.findById = jest.fn();
+    slaveModel.findByIdAndUpdate = jest.fn();
+    slaveModel.findByIdAndDelete = jest.fn();
 });
-
-
-// slave.controller.js
 
 describe('SlaveController.getAllSlaves tests', () => {
     it('should have a getAllSlaves function', () => {
@@ -44,7 +45,6 @@ describe('SlaveController.getAllSlaves tests', () => {
         expect(res._getJSONData()).toEqual(slaves);
     });
 });
-
 
 describe('SlaveController.getSlaveById tests', () => {
     it('should have a getSlaveById function', () => {
@@ -74,16 +74,9 @@ describe('SlaveController.getSlaveById tests', () => {
 
         expect(res.statusCode).toBe(404);
         expect(res._getJSONData()).toEqual({ message: 'Nem található ilyen ID-jű rabszolga.' });
-
     });
 });
 
-    req = httpMocks.createRequest()
-    res = httpMocks.createResponse()
-    next = null
-})
-
-jest.mock("../../model/slave.model");  // Mock the slave model
 
 describe('SlaveController.createSlave tests', () => {
     it('should have a createSlave function', () => {
@@ -164,7 +157,6 @@ describe('SlaveController.createSlave tests', () => {
 });
 
 describe('SlaveController.updateSlave tests', () => {
-
     it('should have an updateSlave function', () => {
         expect(typeof SlaveController.updateSlave).toBe('function');
     });
@@ -174,16 +166,14 @@ describe('SlaveController.updateSlave tests', () => {
         req.params.id = '1';
         req.body = updatedSlave;
 
-        // Mock the findByIdAndUpdate to return a successful update
         slaveModel.findByIdAndUpdate.mockResolvedValue(updatedSlave);
 
         await SlaveController.updateSlave(req, res, next);
 
-        // Ensure the correct data is passed to findByIdAndUpdate
         expect(slaveModel.findByIdAndUpdate).toHaveBeenCalledWith(
-            '1', // ID parameter
-            updatedSlave, // Updated fields
-            { new: true, runValidators: true } // Options
+            '1',
+            updatedSlave,
+            { new: true, runValidators: true }
         );
     });
 
@@ -196,19 +186,37 @@ describe('SlaveController.updateSlave tests', () => {
 
         await SlaveController.updateSlave(req, res, next);
 
-        expect(res.statusCode).toBe(200);  // Status code should be 200 (OK)
-        expect(res._getJSONData()).toEqual(updatedSlave);  // Response should contain updated slave data
+        expect(res.statusCode).toBe(200);
+        expect(res._getJSONData()).toEqual(updatedSlave);
     });
 
     it('should return 404 status code when slave is not found', async () => {
-        req.params.id = '999';  // Non-existent slave ID
+        req.params.id = '999';
         req.body = { name: 'John', age: 25, origin: 'Africa' };
 
-        slaveModel.findByIdAndUpdate.mockResolvedValue(null);  // Simulate no slave found
+        slaveModel.findByIdAndUpdate.mockResolvedValue(null);
 
         await SlaveController.updateSlave(req, res, next);
 
-slaveModel.findByIdAndDelete = jest.fn();
+        expect(res.statusCode).toBe(404);
+        expect(res._getJSONData()).toEqual({ message: 'Nem található ilyen ID-jű rabszolga.' });
+    });
+
+    it('should return 400 status code if update fails due to validation error', async () => {
+        const invalidData = { name: '', age: -5 };  // Invalid data
+        req.params.id = '1';
+        req.body = invalidData;
+
+        const error = new Error('slave validation failed');
+        slaveModel.findByIdAndUpdate.mockRejectedValue(error);
+
+        await SlaveController.updateSlave(req, res, next);
+
+        expect(res.statusCode).toBe(400);
+        expect(res._getJSONData()).toEqual({ message: 'slave validation failed' });
+    });
+});
+
 describe('SlaveController.deleteSlave tests', () => {
     it('should have a deleteSlave function', () => {
         expect(typeof SlaveController.deleteSlave).toBe('function');
@@ -238,23 +246,5 @@ describe('SlaveController.deleteSlave tests', () => {
 
         expect(res.statusCode).toBe(404);
         expect(res._getJSONData()).toEqual({ message: 'Nem található ilyen ID-jű rabszolga.' });
-    });
-});
-        expect(res.statusCode).toBe(404);  // 404 for not found
-        expect(res._getJSONData()).toEqual({ message: 'Nem található ilyen ID-jű rabszolga.' });
-    });
-
-    it('should return 400 status code if update fails due to validation error', async () => {
-        const invalidData = { name: '', age: -5 };  // Invalid data (e.g., empty name and invalid age)
-        req.params.id = '1';
-        req.body = invalidData;
-
-        const error = new Error('slave validation failed');
-        slaveModel.findByIdAndUpdate.mockRejectedValue(error);  // Simulate validation error
-
-        await SlaveController.updateSlave(req, res, next);
-
-        expect(res.statusCode).toBe(400);  // 400 for bad request
-        expect(res._getJSONData()).toEqual({ message: 'slave validation failed' });
     });
 });
